@@ -992,14 +992,17 @@ const defaultIgnore = [
 	'.vscodeignore',
 	'package-lock.json',
 	'yarn.lock',
+	'npm-shrinkwrap.json',
 	'.editorconfig',
 	'.npmrc',
 	'.yarnrc',
+	'.gitattributes',
 	'*.todo',
 	'tslint.yaml',
 	'.eslintrc*',
 	'.babelrc*',
 	'.prettierrc',
+	'webpack.config.js',
 	'ISSUE_TEMPLATE.md',
 	'CONTRIBUTING.md',
 	'PULL_REQUEST_TEMPLATE.md',
@@ -1007,14 +1010,14 @@ const defaultIgnore = [
 	'.github',
 	'.travis.yml',
 	'appveyor.yml',
-	'**/.git',
 	'**/.git/**',
-	'**/{.gitignore,.gitattributes,.gitmodules}',
 	'**/*.vsix',
 	'**/.DS_Store',
 	'**/*.vsixmanifest',
 	'**/.vscode-test/**',
 ];
+
+const notIgnored = ['!package.json', '!README.md'];
 
 function collectAllFiles(cwd: string, useYarn?: boolean, dependencyEntryPoints?: string[]): Promise<string[]> {
 	return getDependencies(cwd, useYarn, dependencyEntryPoints).then(deps => {
@@ -1059,7 +1062,7 @@ function collectFiles(
 				])
 
 				// Combine with default ignore list
-				.then(ignore => [...defaultIgnore, ...ignore, '!package.json'])
+				.then(ignore => [...defaultIgnore, ...ignore, ...notIgnored])
 
 				// Split into ignore and negate list
 				.then(ignore => _.partition(ignore, i => !/^\s*!/.test(i)))
